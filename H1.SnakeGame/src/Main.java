@@ -17,11 +17,9 @@ public class Main {
 					{Spot.Wall,Spot.Empty,Spot.Empty,Spot.Empty,Spot.Empty,Spot.Empty,Spot.Empty,Spot.Empty,Spot.Empty,Spot.Wall},
 					{Spot.Wall,Spot.Empty,Spot.Empty,Spot.Empty,Spot.Empty,Spot.Empty,Spot.Empty,Spot.Empty,Spot.Empty,Spot.Wall},
 					{Spot.Wall,Spot.Wall,Spot.Wall,Spot.Wall,Spot.Wall,Spot.Wall,Spot.Wall,Spot.Wall,Spot.Wall,Spot.Wall}};
-		for(int i = 0; i<2 ; i++)
-		snake.prependRight();
 	}
 	
-	public enum Spot {
+	private enum Spot {
 		Wall, Apple, Empty;
 	}
 	
@@ -46,60 +44,73 @@ public class Main {
 		int y = snake.getRow();
 		int x = snake.getColumn();
 		switch (command){
-			case "left":
-				snake.prependLeft();
-				if(field[y][x-1]==Spot.Apple){
-					deleteApple();
-					newApple();
-				} else {
-					snake.removeLast();
-				}
-				break;
-			case "right":
-				snake.prependRight();
-				if(field[y][x+1]==Spot.Apple){
-					deleteApple();
-					newApple();
-				} else {
-					snake.removeLast();
-				}
-				break;
-			case "up":
-				snake.prependUp();
-				if(field[y-1][x]==Spot.Apple){
-					deleteApple();
-					newApple();
-				} else {
-					snake.removeLast();
-				}
-				break;
-			case "down":
-				snake.prependDown();
-				if(field[y+1][x]==Spot.Apple){
-					deleteApple();
-					newApple();
-				} else {
-					snake.removeLast();
-				}
-				break;
-			case "exit":
-				System.out.println("Game Over");
-				System.exit(0);
-				break;
-			case "help":
-				System.out.println("Welcome to Snake");
-				System.out.println("The goal in this game is to have your snake become as large as possible.");
-				System.out.println("Your snake gets bigger by eating apples indicated by \"A\".");
-				System.out.println("The following commands are available:");
-				System.out.println("    left: moves the snake's head left");
-				System.out.println("   right: moves the snake's head left");
-				System.out.println("      up: moves the snake's head left");
-				System.out.println("    down: moves the snake's head left");
-				System.out.println("    exit: exit the game");
-				System.out.println("Good luck!");
-				break;
-			default:
-				System.out.println("Unknown command, use help for a full list of all available commands.");
+		/* For use if game gets automated in time
+		case " ":
+			snake.goFurther();
+			y = snake.getRow();
+			x = snake.getColumn();
+			if(field[y][x]==Spot.Apple){
+				deleteApple();
+				newApple();
+			} else {
+				snake.removeLast();
+			}
+			break;
+		*/
+		case "q":
+			snake.goLeft();
+			if(field[y][x-1]==Spot.Apple){
+				deleteApple();
+				newApple();
+			} else {
+				snake.removeLast();
+			}
+			break;
+		case "d":
+			snake.goRight();
+			if(field[y][x+1]==Spot.Apple){
+				deleteApple();
+				newApple();
+			} else {
+				snake.removeLast();
+			}
+			break;
+		case "z":
+			snake.goUp();
+			if(field[y-1][x]==Spot.Apple){
+				deleteApple();
+				newApple();
+			} else {
+				snake.removeLast();
+			}
+			break;
+		case "s":
+			snake.goDown();
+			if(field[y+1][x]==Spot.Apple){
+				deleteApple();
+				newApple();
+			} else {
+				snake.removeLast();
+			}
+			break;
+		case "exit":
+			System.out.println("Game Over");
+			System.exit(0);
+			break;
+		case "help":
+			System.out.println("Welcome to Snake");
+			System.out.println("The goal in this game is to have your snake become as large as possible.");
+			System.out.println("Your snake gets bigger by eating apples indicated by \"A\".");
+			System.out.println("The following commands are available:");
+			System.out.println("    left: moves the snake's head left");
+			System.out.println("   right: moves the snake's head left");
+			System.out.println("      up: moves the snake's head left");
+			System.out.println("    down: moves the snake's head left");
+			System.out.println("    exit: exit the game");
+			System.out.println("Good luck!");
+			break;
+		default:
+			System.out.println("Unknown command, use help for a full list of all available commands.");
 		}
 	}
 	
@@ -166,12 +177,13 @@ public class Main {
 		while(true){
 			String command = scanner.next(); 		//Get next command
 			game.executeCommand(command);			//Execute the command
-			System.out.print(game.toString());		//Print the board
 			if(game.gameOver()){					//return true if game over
 				System.out.println("Game Over");
+				System.out.println("Score: "+game.snake.size());
 				scanner.close();					//Close the program
 				System.exit(0);
 			}
+			System.out.print(game.toString());		//Print the board
 		}
 	}
 }
