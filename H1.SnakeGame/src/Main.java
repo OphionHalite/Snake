@@ -1,12 +1,14 @@
 import java.util.Scanner;
 
 public class Main {
-	private int rows = 10;
-	private int columns = 10;
-	private Spot field[][] = new Spot[rows][columns];
-	private Snake snake = new Snake(new int[]{5,1});
+	private int rows;
+	private int columns;
+	private Spot field[][];
+	private Snake snake;
 	
 	public Main(){
+		rows = 10;
+		columns = 10;
 		field = new Spot[][]{{Spot.Wall,Spot.Wall,Spot.Wall,Spot.Wall,Spot.Wall,Spot.Wall,Spot.Wall,Spot.Wall,Spot.Wall,Spot.Wall},
 					{Spot.Wall,Spot.Empty,Spot.Empty,Spot.Empty,Spot.Empty,Spot.Empty,Spot.Empty,Spot.Empty,Spot.Empty,Spot.Wall},
 					{Spot.Wall,Spot.Empty,Spot.Empty,Spot.Empty,Spot.Empty,Spot.Empty,Spot.Empty,Spot.Empty,Spot.Empty,Spot.Wall},
@@ -17,18 +19,20 @@ public class Main {
 					{Spot.Wall,Spot.Empty,Spot.Empty,Spot.Empty,Spot.Empty,Spot.Empty,Spot.Empty,Spot.Empty,Spot.Empty,Spot.Wall},
 					{Spot.Wall,Spot.Empty,Spot.Empty,Spot.Empty,Spot.Empty,Spot.Empty,Spot.Empty,Spot.Empty,Spot.Empty,Spot.Wall},
 					{Spot.Wall,Spot.Wall,Spot.Wall,Spot.Wall,Spot.Wall,Spot.Wall,Spot.Wall,Spot.Wall,Spot.Wall,Spot.Wall}};
+					// Adjust matrix for different map lay-out
+		snake = new Snake(new int[]{5,1});
 	}
 	
 	private enum Spot {
 		Wall, Apple, Empty;
 	}
 	
-	public void deleteApple(){
+	private void deleteApple(){
 		field[snake.getRow()][snake.getColumn()] = Spot.Empty;  //Delete previous apple
 		//Use only if snakehead ate apple
 	}
 	
-	public void newApple(){
+	private void newApple(){
 		boolean placed = true;
 		while(placed){
 			int a = (int)(Math.random()*rows); 		//Pick a random row
@@ -40,58 +44,38 @@ public class Main {
 		}
 	}
 	
+	private void detectMovement(){
+		if(field[snake.getRow()][snake.getColumn()]==Spot.Apple){	//Detects if snakehead ate apple
+			deleteApple();											//Consumes the apple
+			newApple();												//Spawn a new apple
+		} else {
+			snake.removeLast();	//If snake didn't consume apple, tail moves along
+		}
+	}
+	
 	public void executeCommand(String command){
-		int y = snake.getRow();
-		int x = snake.getColumn();
 		switch (command){
 		/* For use if game gets automated in time
 		case " ":
 			snake.goFurther();
-			y = snake.getRow();
-			x = snake.getColumn();
-			if(field[y][x]==Spot.Apple){
-				deleteApple();
-				newApple();
-			} else {
-				snake.removeLast();
-			}
+			detectMovement();
 			break;
-		*/
+			*/
 		case "q":
 			snake.goLeft();
-			if(field[y][x-1]==Spot.Apple){
-				deleteApple();
-				newApple();
-			} else {
-				snake.removeLast();
-			}
+			detectMovement();
 			break;
 		case "d":
 			snake.goRight();
-			if(field[y][x+1]==Spot.Apple){
-				deleteApple();
-				newApple();
-			} else {
-				snake.removeLast();
-			}
+			detectMovement();
 			break;
 		case "z":
 			snake.goUp();
-			if(field[y-1][x]==Spot.Apple){
-				deleteApple();
-				newApple();
-			} else {
-				snake.removeLast();
-			}
+			detectMovement();
 			break;
 		case "s":
 			snake.goDown();
-			if(field[y+1][x]==Spot.Apple){
-				deleteApple();
-				newApple();
-			} else {
-				snake.removeLast();
-			}
+			detectMovement();
 			break;
 		case "exit":
 			System.out.println("Game Over");
@@ -102,11 +86,11 @@ public class Main {
 			System.out.println("The goal in this game is to have your snake become as large as possible.");
 			System.out.println("Your snake gets bigger by eating apples indicated by \"A\".");
 			System.out.println("The following commands are available:");
-			System.out.println("    left: moves the snake's head left");
-			System.out.println("   right: moves the snake's head left");
-			System.out.println("      up: moves the snake's head left");
-			System.out.println("    down: moves the snake's head left");
-			System.out.println("    exit: exit the game");
+			System.out.println("    d: moves the snake's head left");
+			System.out.println("  	q: moves the snake's head right");
+			System.out.println("   	z: moves the snake's head up");
+			System.out.println("   	s: moves the snake's head down");
+			System.out.println("	exit: forfeit the game");
 			System.out.println("Good luck!");
 			break;
 		default:
@@ -160,7 +144,7 @@ public class Main {
 						}
 					}
 					if(!placed)
-					b.append("  ");
+					b.append("  "); //Makes empy spot only if no snakepiece was placed
 					break;
 				}
 			}
